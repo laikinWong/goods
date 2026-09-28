@@ -5,6 +5,7 @@ const activeProcessingStatuses = ['preparing','running','finalizing'];
 const processingStatuses = {preparing:'准备数据',running:'处理中',finalizing:'整理结果',success:'处理完成',failed:'处理失败'};
 const modeLabels = {full:'全量处理',incremental:'增量处理'};
 let state={jobs:[],cloud_processing:{jobs:[]}}, token='', busy=false;
+let statisticsBusy=false;
 const checked=new Set(Object.keys(names));
 
 function notify(text){$('notice').textContent=text;$('notice').hidden=!text;}
@@ -25,6 +26,8 @@ function render(){
   $('processing-select-all').textContent=checked.size===Object.keys(names).length?'取消全选':'全选';
   $('processing-start').disabled=busy||processingActive||!token||!targets.length||conflicts.length>0;
   $('processing-start').textContent=processingActive?'处理中…':'开始处理';
+  $('category-statistics-export').disabled=statisticsBusy||!token;
+  $('category-statistics-export').textContent=statisticsBusy?'正在导出…':'导出统计表';
   if(conflicts.length&&!processingActive)notify(`${conflicts.map(target=>names[target]).join('、')}正在采集，请等待采集结束后处理。`);
   else if($('notice').dataset.kind==='conflict')notify('');
   $('notice').dataset.kind=conflicts.length&&!processingActive?'conflict':'';
@@ -55,6 +58,15 @@ async function startProcessing(){
   }catch(error){notify(error.message);}finally{busy=false;render();}
 }
 
+async function exportCategoryStatistics(){
+  statisticsBusy=true;notify('');render();
+  try{
+    const response=await fetch('/api/category-statistics/export',{method:'POST',headers:{'Content-Type':'application/json','X-Control-Token':token},body:JSON.stringify({export:true})});
+    const result=await response.json();if(!response.ok)throw new Error(result.error||'分类数据统计导出失败');
+    notify(`分类数据统计已导出，共 ${result.rows} 条分类记录。结果：${result.path}`);
+  }catch(error){notify(error.message);}finally{statisticsBusy=false;render();}
+}
+
 async function refresh(){
   try{
     const response=await fetch('/api/state');if(!response.ok)throw new Error('服务连接失败');
@@ -64,6 +76,7 @@ async function refresh(){
 }
 
 $('processing-start').onclick=startProcessing;
+$('category-statistics-export').onclick=exportCategoryStatistics;
 for(const input of document.querySelectorAll('.processing-platform'))input.onchange=()=>{input.checked?checked.add(input.value):checked.delete(input.value);render();};
 $('processing-select-all').onclick=()=>{if(checked.size===Object.keys(names).length)checked.clear();else Object.keys(names).forEach(name=>checked.add(name));render();};
 $('date').textContent=new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});

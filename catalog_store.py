@@ -113,8 +113,49 @@ class CatalogStore:
 
                 CREATE INDEX IF NOT EXISTS idx_crawl_run_products_pending
                     ON crawl_run_products(source, processed_job_id, product_id);
+
+                CREATE TABLE IF NOT EXISTS bdt_category_mappings (
+                    category_id TEXT PRIMARY KEY,
+                    level1_id TEXT NOT NULL,
+                    level1_name TEXT NOT NULL,
+                    level2_id TEXT NOT NULL,
+                    level2_name TEXT NOT NULL,
+                    level3_name TEXT NOT NULL,
+                    mapped_at TEXT NOT NULL
+                );
                 """
             )
+
+    def upsert_bdt_category_mappings(
+        self, records: Iterable[Tuple[Any, Any, Any, Any, Any, Any]]
+    ) -> int:
+        """Store the latest category names obtained during an 八达通 crawl."""
+        now = utc_now()
+        rows = [
+            tuple(str(value) for value in record) + (now,)
+            for record in records
+            if len(record) == 6 and all(value is not None and str(value) for value in record)
+        ]
+        if not rows:
+            return 0
+        with self.connection:
+            self.connection.executemany(
+                """
+                INSERT INTO bdt_category_mappings (
+                    category_id, level1_id, level1_name,
+                    level2_id, level2_name, level3_name, mapped_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(category_id) DO UPDATE SET
+                    level1_id = excluded.level1_id,
+                    level1_name = excluded.level1_name,
+                    level2_id = excluded.level2_id,
+                    level2_name = excluded.level2_name,
+                    level3_name = excluded.level3_name,
+                    mapped_at = excluded.mapped_at
+                """,
+                rows,
+            )
+        return len(rows)
 
     def start_run(self, source: str) -> str:
         run_id = f"{source}-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"

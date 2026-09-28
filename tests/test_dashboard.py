@@ -269,6 +269,14 @@ class HTTPValidationTests(unittest.TestCase):
         handler.server.manager.start_cloud_processing.assert_called_once_with(['bdt', 'sjyx'], 'incremental')
         self.assertEqual(handler.send.call_args.args[0], 200)
 
+    def test_category_statistics_export_route(self):
+        handler = self.handler({'export': True})
+        handler.path = '/api/category-statistics/export'
+        handler.server.manager.export_category_statistics.return_value = {'path': 'data/cloud-products/example/分类数据统计.xlsx', 'rows': 3}
+        handler.do_POST()
+        handler.server.manager.export_category_statistics.assert_called_once_with()
+        self.assertEqual(handler.send.call_args.args[0], 200)
+
     def test_cloud_processing_has_a_dedicated_page(self):
         handler = self.handler({})
         handler.path = '/cloud-products'
@@ -278,6 +286,7 @@ class HTTPValidationTests(unittest.TestCase):
         self.assertIn('text/html', content_type)
         self.assertIn('云商品数据对接'.encode(), body)
         self.assertIn(b'id="processing-start"', body)
+        self.assertIn(b'id="category-statistics-export"', body)
 
         index = (Path(__file__).parents[1] / 'web' / 'index.html').read_text(encoding='utf-8')
         self.assertIn('href="/cloud-products"', index)

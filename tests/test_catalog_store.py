@@ -57,6 +57,20 @@ class CatalogStoreTests(unittest.TestCase):
         self.assertEqual(stats["new_count"], 1)
         self.assertEqual(stats["failed_count"], 1)
 
+    def test_bdt_category_mappings_are_replaced_by_live_category_names(self):
+        self.store.upsert_bdt_category_mappings([
+            ("1001", "857", "钉线建材", "1000", "手动钉类", "铁钉"),
+        ])
+        self.store.upsert_bdt_category_mappings([
+            ("1001", "857", "钉线建材", "1000", "手动钉类", "水泥钉"),
+        ])
+
+        row = self.store.connection.execute(
+            "SELECT level1_name, level2_name, level3_name FROM bdt_category_mappings WHERE category_id = '1001'"
+        ).fetchone()
+
+        self.assertEqual(tuple(row), ("钉线建材", "手动钉类", "水泥钉"))
+
 
 class CatalogMigrationTests(unittest.TestCase):
     @staticmethod

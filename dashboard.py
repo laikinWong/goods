@@ -18,6 +18,7 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit
 
+from category_statistics import export_category_statistics
 from cloud_product_processing import CloudProductProcessor
 from crawler_performance import PERFORMANCE_DEFAULTS, validate_performance_settings
 from run_crawlers import CRAWLERS, copy_primary_output, create_run_log_dir
@@ -158,6 +159,10 @@ class Manager:
             if busy:
                 raise ValueError("请先等待所选平台完成增量爬取：" + "、".join(LABELS[target] for target in LABELS if target in busy))
         return self.cloud_processing.start(targets, mode)
+
+    def export_category_statistics(self):
+        with self.lock:
+            return export_category_statistics(self.root)
 
     def start(self, targets, dry_run=False, performance=None):
         if WINDOWS:
@@ -431,6 +436,8 @@ class Handler(BaseHTTPRequestHandler):
             if self.path == "/api/cloud-processing/start":
                 job_id = self.server.manager.start_cloud_processing(body.get("targets"), body.get("mode"))
                 return self.send(200, {"id": job_id})
+            if self.path == "/api/category-statistics/export":
+                return self.send(200, self.server.manager.export_category_statistics())
             if self.path in ("/api/stop", "/api/finish", "/api/pause", "/api/resume"):
                 if not isinstance(body.get("id"), str):
                     raise ValueError("任务 ID 无效")

@@ -79,6 +79,28 @@ def step2_get_subcategories(level1_id, level1_name):
     return subcategories
 
 
+def category_mapping_rows(level1, level2_categories):
+    """Flatten the live category tree for report exports without re-fetching it."""
+    rows = []
+    for level2 in level2_categories:
+        if not isinstance(level2, dict):
+            continue
+        for level3 in level2.get("sons", []):
+            if not isinstance(level3, dict):
+                continue
+            values = (
+                level3.get("id"),
+                level1.get("id"),
+                level1.get("name"),
+                level2.get("id"),
+                level2.get("name"),
+                level3.get("name"),
+            )
+            if all(value is not None and str(value) for value in values):
+                rows.append(values)
+    return rows
+
+
 def step3_get_goods_list(category_id, category_name):
     print(f"\n  --- 获取商品列表: {category_name}(id={category_id}) ---")
     all_goods = []
@@ -167,6 +189,11 @@ def main(database_path=None):
             cat_dir = os.path.join(OUTPUT_DIR, "categories", str(level1_id))
             os.makedirs(cat_dir, exist_ok=True)
             save_json(f"categories/{level1_id}/subcategories.json", subcategories)
+            mapped_count = catalog.upsert_bdt_category_mappings(
+                category_mapping_rows(cat1, subcategories)
+            )
+            if mapped_count:
+                print(f"  已同步分类映射: {mapped_count} 个三级分类")
 
             for cat2 in subcategories:
                 sons = cat2.get("sons", [])

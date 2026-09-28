@@ -44,6 +44,7 @@
 .sidebar-nav .nav span{font-size:12px;white-space:nowrap}
 .processing-page .heading{margin-bottom:30px}
 .processing-page .processing-title{margin-top:32px}
+.category-statistics-title{padding-top:4px;border-top:1px solid #e0e5dc}
 .processing-help{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
 .processing-help>div{min-height:145px;padding:24px;background:#fff;border:1px solid #dfe5dd;border-radius:10px}
 .processing-help>div>span{display:block;margin-bottom:22px;color:#83a08c;font:600 10px/1 ui-monospace,Menlo,monospace;letter-spacing:1px}
