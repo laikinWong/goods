@@ -1,0 +1,69 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging and build output
+build/
+dist/
+*.egg-info/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Runtime logs and temporary files
+logs/
+*.log
+*.pid
+*.tmp
+*.temp
+
+# Runtime databases and crawler output
+*.sqlite
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+*.db
+*.db-shm
+*.db-wal
+
+# Keep only the workbook template required by cloud_product_processing.py.
+data/*
+!data/samples/
+data/samples/*
+!data/samples/云商品批量导入模板.xlsx
+sjyx/outputs/
+lcgt/*.json
+bdt/api/
+bdt/data/
+
+# Generated distribution bundles and bundled runtimes
+update/
+update.zip
+install/
+bdt/*.zip
+
+# Internal planning artifacts
+docs/superpowers/

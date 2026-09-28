@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>商品采集控制台</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<aside><a class="brand" href="/">商品数据采集</a><div class="workspace">WORKSPACE / 本地工作区</div><nav class="sidebar-nav" aria-label="工作区菜单"><a class="nav active" href="/">◫ <span>采集控制台</span><b>01</b></a><a class="nav" href="/cloud-products">⇄ <span>云商品数据对接</span><b>02</b></a></nav><div class="side-note"><span class="dot"></span> LOCAL ENVIRONMENT<br><small>商品数据，井然有序。</small></div></aside>
+<main>
+<header><span>工作区 <em>/</em> 采集控制台</span><span id="connection" role="status">连接中…</span></header>
+<section class="heading"><div><div class="eyebrow">CRAWLER OPERATIONS</div><h1>让数据，持续流入。</h1><p>在一个工作区启动采集、追踪任务、查看实时日志。</p></div><div class="date" id="date"></div></section>
+<section class="metrics"><div><span>接入平台</span><strong>03<small>个数据源</small></strong></div><div><span>进行中（含暂停）</span><strong id="running">00</strong></div><div><span>已成功</span><strong id="success">00</strong></div><div><span>异常任务</span><strong id="failed">00</strong></div></section>
+<section class="section-title"><div><h2>采集平台 <span>PLATFORMS</span></h2><p>选择平台后并发执行，同一平台同时只运行一个任务。</p></div><button id="start-all" class="primary">▶ 启动所选平台</button></section>
+<div id="notice" role="status" hidden></div>
+<section class="platforms" id="platforms"></section>
+<section class="console">
+<div class="console-head"><div><h2>运行日志 <span class="live-dot"></span></h2><p>每秒刷新 · 显示最近 64 KB 日志</p></div><div class="console-controls"><label><input id="autoscroll" type="checkbox" checked> 自动滚动</label><button id="download">↓ 下载当前日志</button></div></div>
+<div class="console-body"><div class="task-list"><div class="list-title">任务记录 <span id="job-count">0</span></div><nav id="status-filter" class="status-nav" aria-label="任务状态筛选"></nav><div id="jobs"></div></div><div class="terminal"><div class="terminal-bar"><span id="log-title">等待选择任务</span><div class="task-controls"><button id="pause" hidden>Ⅱ 暂停</button><button id="stop" hidden>■ 结束并汇总</button></div></div><div id="job-meta"></div><pre id="logs" tabindex="0">选择一个平台启动采集，或查看已有任务日志。</pre></div></div>
+</section>
+<footer><span><i class="dot"></i> 所有任务在本机运行 · 结果保存至 data/</span><span>GOODS CLI / CONTROL CENTER</span></footer>
+</main>
+</body></html>

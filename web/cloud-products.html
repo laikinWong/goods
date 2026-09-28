@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>云商品数据对接</title><link rel="stylesheet" href="/style.css"><script src="/cloud-products.js" defer></script></head>
+<body>
+<aside><a class="brand" href="/">商品数据采集</a><div class="workspace">WORKSPACE / 本地工作区</div><nav class="sidebar-nav" aria-label="工作区菜单"><a class="nav" href="/">◫ <span>采集控制台</span><b>01</b></a><a class="nav active" href="/cloud-products">⇄ <span>云商品数据对接</span><b>02</b></a></nav><div class="side-note"><span class="dot"></span> LOCAL ENVIRONMENT<br><small>商品数据，井然有序。</small></div></aside>
+<main class="processing-page">
+<header><span>工作区 <em>/</em> 云商品数据对接</span><span id="connection" role="status">连接中…</span></header>
+<section class="heading"><div><div class="eyebrow">CLOUD PRODUCT INTEGRATION</div><h1>云商品数据对接</h1><p>按照模板规则整理各平台商品数据，并保存到本地结果目录。</p></div><div class="date" id="date"></div></section>
+<section class="metrics processing-metrics"><div><span>接入平台</span><strong>03<small>个平台</small></strong></div><div><span>处理模式</span><strong>02<small>全量 / 增量</small></strong></div><div><span>单表上限</span><strong>1000<small>条商品</small></strong></div><div><span>已生成表格</span><strong id="metric-files">00</strong></div></section>
+<section class="section-title processing-title"><div><h2>数据处理 <span>DATA PROCESSING</span></h2><p>增量处理使用各平台最近一次增量采集所产生的商品数据。</p></div><button id="processing-start" class="primary">开始处理</button></section>
+<div id="notice" role="status" hidden></div>
+<section class="processing-panel" aria-labelledby="processing-heading">
+  <div class="processing-options">
+    <div class="processing-group"><span class="processing-label" id="processing-heading">处理模式</span><label><input type="radio" name="processing-mode" value="full" checked> 全量处理</label><label><input type="radio" name="processing-mode" value="incremental"> 增量处理</label></div>
+    <div class="processing-group"><span class="processing-label">选择平台</span><label><input class="processing-platform" type="checkbox" value="bdt" checked> 八达通</label><label><input class="processing-platform" type="checkbox" value="sjyx" checked> 中建三局严选</label><label><input class="processing-platform" type="checkbox" value="lcgt" checked> 乐从钢铁</label><button id="processing-select-all" type="button">取消全选</button></div>
+  </div>
+  <div class="processing-progress">
+    <div class="processing-progress-head"><strong id="processing-status">等待处理</strong><span id="processing-percent">0%</span></div>
+    <div class="progress-track" aria-hidden="true"><div id="processing-progress-bar"></div></div>
+    <div class="processing-stats"><span>当前平台 <b id="processing-current">—</b></span><span>处理进度 <b id="processing-count">0 / 0</b></span><span>已生成表格 <b id="processing-files">0</b></span></div>
+    <div id="processing-output" class="processing-output">处理结果目录：—</div>
+    <div id="processing-error" class="processing-error" hidden></div>
+  </div>
+</section>
+<section class="processing-help"><div><span>01</span><h2>选择处理模式</h2><p>全量处理读取平台现有全部商品；增量处理只读取尚未处理的新增商品。</p></div><div><span>02</span><h2>选择目标平台</h2><p>支持单个平台或全选处理。同一平台正在采集时，需要等待采集结束。</p></div><div><span>03</span><h2>按清单导入</h2><p>文件名标明全量或增量，批次时间由任务文件夹标识。处理完成后，只导入清单中列出的表格。</p></div></section>
+<footer><span><i class="dot"></i> 所有任务在本机运行 · 结果保存至 data/cloud-products/</span><span>GOODS CLI / CLOUD PRODUCT INTEGRATION</span></footer>
+</main>
+</body></html>
